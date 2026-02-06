@@ -231,7 +231,9 @@ function renderCalendar(holidays) {
 
   const formatItem = (h) => {
     const title = h.title.replace(/\s*\(.*\)/, '');
-    return `<div class="calendar-item"><span class="calendar-name">${title}</span><span class="calendar-date">${new Date(h.date).toLocaleDateString()}</span></div>`;
+    const heb = h.hebrew || '';
+    const name = heb ? `${heb} — ${title}` : title;
+    return `<div class="calendar-item"><span class="calendar-name">${name}</span><span class="calendar-date">${new Date(h.date).toLocaleDateString()}</span></div>`;
   };
 
   monthEl.innerHTML = inMonth.map(formatItem).join('') || 'No upcoming holidays found.';

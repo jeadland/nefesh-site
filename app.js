@@ -232,7 +232,7 @@ function renderCalendar(holidays) {
   const formatItem = (h) => {
     const title = h.title.replace(/\s*\(.*\)/, '');
     const heb = h.hebrew || '';
-    const name = heb ? `${heb} — ${title}` : title;
+    const name = heb && heb !== title ? `${heb} — ${title}` : title;
     return `<div class="calendar-item"><span class="calendar-name">${name}</span><span class="calendar-date">${new Date(h.date).toLocaleDateString()}</span></div>`;
   };
 

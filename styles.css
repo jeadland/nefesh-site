@@ -61,8 +61,8 @@ body {
 .cards {
   margin-top: 32px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
 }
 
 .card {
@@ -78,10 +78,13 @@ body {
 .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 0 0 1px var(--glow), 0 30px 70px rgba(0,0,0,.35); }
 
 .card-title { color: var(--accent-2); text-transform: uppercase; font-size: .75rem; letter-spacing: 1px; }
-.big { font-size: 2.1rem; margin: 12px 0; font-weight: 500; }
+.big { font-size: 2.1rem; margin: 12px 0 6px; font-weight: 500; }
 .sub { color: var(--muted); line-height: 1.5; }
 .meta { color: var(--muted); margin-top: 8px; }
 .meta.small { font-size: .78rem; }
+#parsha-he, #holiday-he { font-size: 1.9rem; letter-spacing: .5px; }
+#parsha-en, #holiday-en { font-size: 1.05rem; color: var(--accent-2); }
+
 
 .section-title { font-size: 1.4rem; margin-bottom: 16px; }
 
@@ -123,6 +126,12 @@ body {
 .coming-soon { margin-top: 24px; color: var(--muted); display: flex; gap: 24px; }
 
 .settings-grid { display: grid; gap: 16px; max-width: 700px; }
+.calendar-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.calendar-list { color: var(--muted); line-height: 1.7; }
+.calendar-item { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #151a23; }
+.calendar-item:last-child { border-bottom: none; }
+.calendar-name { color: var(--accent-2); }
+.calendar-date { color: var(--muted); }
 .setting label { display: block; margin-bottom: 6px; color: var(--accent-2); }
 .toggle { display: flex; gap: 8px; }
 .toggle-btn {

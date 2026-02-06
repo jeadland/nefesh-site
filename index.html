@@ -14,6 +14,7 @@
       <nav class="nav">
         <button class="nav-link active" data-view="home">Home</button>
         <button class="nav-link" data-view="memories">Memories</button>
+        <button class="nav-link" data-view="calendar">Calendar</button>
         <button class="nav-link" data-view="settings">Settings</button>
       </nav>
     </header>
@@ -37,13 +38,15 @@
 
           <div class="card">
             <div class="card-title">This Week’s Parsha</div>
-            <div class="big" id="parsha">—</div>
+            <div class="big" id="parsha-he">—</div>
+            <div class="sub" id="parsha-en">—</div>
             <div class="sub" id="parsha-desc">—</div>
           </div>
 
           <div class="card">
             <div class="card-title">Next Holiday / Holy Day</div>
-            <div class="big" id="holiday">—</div>
+            <div class="big" id="holiday-he">—</div>
+            <div class="sub" id="holiday-en">—</div>
             <div class="sub" id="holiday-desc">—</div>
             <div class="meta" id="holiday-date">—</div>
             <div class="meta" id="holiday-countdown">—</div>
@@ -65,6 +68,21 @@
           <div>Holiday playlists (Coming soon)</div>
         </div>
         <div class="hint">Memories are stored locally in your browser. Nothing is uploaded.</div>
+      </section>
+
+      <section id="calendar" class="view">
+        <div class="section-title">Holiday Calendar</div>
+        <div class="calendar-grid">
+          <div class="card">
+            <div class="card-title">Coming Month</div>
+            <div id="calendar-month" class="calendar-list">—</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Year at a Glance</div>
+            <div id="calendar-year" class="calendar-list">—</div>
+          </div>
+        </div>
+        <div class="hint">Times are shown in your local timezone. Holidays begin at sundown.</div>
       </section>
 
       <section id="settings" class="view">

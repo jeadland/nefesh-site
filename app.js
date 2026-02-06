@@ -247,21 +247,47 @@ function handleShabbat(data) {
   }
 
   if (parsha) {
-    setText('parsha', parsha.hebrew ? `${parsha.hebrew} (${parsha.title})` : parsha.title);
+    setText('parsha-he', parsha.hebrew || parsha.title);
+    setText('parsha-en', parsha.title);
     setText('parsha-desc', describeParsha(parsha.title));
   }
 }
 
 function handleHoliday(data) {
   if (!data || !data.items) return;
-  const next = findNextHoliday(data.items.filter(i => i.category === 'holiday'));
+  const holidays = data.items.filter(i => i.category === 'holiday');
+  const next = findNextHoliday(holidays);
   if (!next) return;
   const title = next.title.replace(/\s*\(.*\)/, '');
-  setText('holiday', next.hebrew ? `${next.hebrew} (${next.title})` : next.title);
+  setText('holiday-he', next.hebrew || next.title);
+  setText('holiday-en', title);
   setText('holiday-desc', HOLIDAY_SUMMARIES[title] || 'A holy day on the Jewish calendar.');
   setText('holiday-date', `Starts: ${new Date(next.date).toLocaleDateString()}`);
   const ms = new Date(next.date) - new Date();
   setText('holiday-countdown', `Countdown: ${formatCountdown(ms)}`);
+
+  renderCalendar(holidays);
+}
+
+function renderCalendar(holidays) {
+  const monthEl = document.getElementById('calendar-month');
+  const yearEl = document.getElementById('calendar-year');
+  if (!monthEl || !yearEl) return;
+  const now = new Date();
+  const inMonth = holidays.filter(h => {
+    const d = new Date(h.date);
+    return d > now && d < new Date(now.getFullYear(), now.getMonth() + 1, now.getDate() + 30);
+  }).slice(0, 6);
+
+  const inYear = holidays.filter(h => new Date(h.date) > now).slice(0, 12);
+
+  const formatItem = (h) => {
+    const title = h.title.replace(/\s*\(.*\)/, '');
+    return `<div class="calendar-item"><span class="calendar-name">${title}</span><span class="calendar-date">${new Date(h.date).toLocaleDateString()}</span></div>`;
+  };
+
+  monthEl.innerHTML = inMonth.map(formatItem).join('') || 'No upcoming holidays found.';
+  yearEl.innerHTML = inYear.map(formatItem).join('') || 'No upcoming holidays found.';
 }
 
 async function refreshData() {

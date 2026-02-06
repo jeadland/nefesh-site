@@ -148,74 +148,22 @@ function findNextHoliday(items) {
   return null;
 }
 
-const PARSHA_SUMMARIES = {
-  "Bereshit": "Creation, the first humans, and the call to responsibility.",
-  "Noach": "A flood, a new covenant, and a restart for humanity.",
-  "Lech-Lecha": "Abraham’s journey begins and a people is born.",
-  "Vayera": "Hospitality, justice, and a tested faith.",
-  "Chayei Sarah": "Legacy, love, and the next generation.",
-  "Toldot": "Two brothers, two paths, one covenant.",
-  "Vayetzei": "Exile, dreams, and building a home.",
-  "Vayishlach": "Reconciliation, struggle, and identity.",
-  "Vayeshev": "Joseph’s story begins — family conflict and destiny.",
-  "Miketz": "Dreams, famine, and a turning point.",
-  "Vayigash": "Truth revealed; family reunited.",
-  "Vayechi": "Blessings, memory, and the future of a people.",
-  "Shemot": "Oppression, courage, and the call of Moses.",
-  "Va'eira": "Promises renewed; redemption begins.",
-  "Bo": "Plagues, liberation, and the first Passover.",
-  "Beshalach": "Sea, song, and the journey into freedom.",
-  "Yitro": "Revelation at Sinai; receiving the Torah.",
-  "Mishpatim": "Laws that build a just society.",
-  "Terumah": "Sanctuary, beauty, and sacred space.",
-  "Tetzaveh": "Priestly service and spiritual leadership.",
-  "Ki Tisa": "The golden calf and second chances.",
-  "Vayakhel": "Community building the Mishkan.",
-  "Pekudei": "Completion, accountability, and presence.",
-  "Vayikra": "Sacrifice, closeness, and intention.",
-  "Tzav": "Ritual, discipline, and devotion.",
-  "Shemini": "Joy and awe in sacred service.",
-  "Tazria": "Life cycles and holiness in the body.",
-  "Metzora": "Healing, reintegration, and renewal.",
-  "Achrei Mot": "Boundaries, holiness, and atonement.",
-  "Kedoshim": "Be holy; ethics that shape daily life.",
-  "Emor": "Sacred time and sacred speech.",
-  "Behar": "Shmita, freedom, and economic justice.",
-  "Bechukotai": "Covenant, consequence, and hope.",
-  "Bamidbar": "Order, journey, and belonging.",
-  "Naso": "Blessing, responsibility, and community.",
-  "Beha'alotcha": "Leadership, light, and restlessness.",
-  "Shelach": "Fear, faith, and the power of perspective.",
-  "Korach": "Authority, rebellion, and humility.",
-  "Chukat": "Paradox, loss, and perseverance.",
-  "Balak": "Unexpected blessings and moral clarity.",
-  "Pinchas": "Zeal, peace, and continuity.",
-  "Matot": "Vows, war, and moral restraint.",
-  "Masei": "Journeys, borders, and preparation.",
-  "Devarim": "Moses’ farewell and vision.",
-  "Vaetchanan": "Love, prayer, and the Shema.",
-  "Eikev": "Gratitude and trust.",
-  "Re'eh": "Choice, responsibility, and blessing.",
-  "Shoftim": "Justice, leadership, and integrity.",
-  "Ki Teitzei": "Everyday ethics and compassion.",
-  "Ki Tavo": "First fruits, gratitude, and commitment.",
-  "Nitzavim": "Standing together, choosing life.",
-  "Vayelech": "Continuity and courage.",
-  "Ha'Azinu": "A song of warning and hope.",
-  "V'Zot HaBerachah": "Blessing, completion, and renewal."
-};
+let PARSHA_SUMMARIES = {};
+let HOLIDAY_SUMMARIES = {};
 
-const HOLIDAY_SUMMARIES = {
-  "Rosh Hashana": "The Jewish New Year — reflection, renewal, and the shofar.",
-  "Yom Kippur": "Day of Atonement — fasting, repentance, and forgiveness.",
-  "Sukkot": "Festival of booths — gratitude and joy in impermanence.",
-  "Shemini Atzeret": "A quiet closing of the festival season.",
-  "Simchat Torah": "Celebration of completing and restarting the Torah.",
-  "Chanukah": "Festival of lights — resilience and dedication.",
-  "Purim": "Celebration of courage and hidden miracles.",
-  "Pesach": "Passover — liberation and the journey to freedom.",
-  "Shavuot": "Receiving the Torah — learning and revelation."
-};
+async function loadSummaries(){
+  try {
+    const [p,h] = await Promise.all([
+      fetch('summaries_parsha.json').then(r=>r.json()),
+      fetch('summaries_holidays.json').then(r=>r.json())
+    ]);
+    PARSHA_SUMMARIES = p;
+    HOLIDAY_SUMMARIES = h;
+  } catch (e) {
+    PARSHA_SUMMARIES = {};
+    HOLIDAY_SUMMARIES = {};
+  }
+}
 
 function describeParsha(name) {
   if (!name) return '—';
@@ -315,7 +263,7 @@ function loadCache() {
 
 loadSettings();
 loadCache();
-refreshData();
+loadSummaries().then(refreshData);
 
 // Update countdown every minute
 setInterval(() => {

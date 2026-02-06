@@ -1,10 +1,11 @@
 :root {
-  --bg: #0b0d12;
-  --card: #10141b;
-  --text: #f5f7fa;
-  --muted: #9aa4b2;
+  --bg: #0a0c10;
+  --card: #11151c;
+  --text: #f7f9fc;
+  --muted: #98a2b3;
   --accent: #7aa2ff;
-  --accent-2: #dfe7ff;
+  --accent-2: #e3ebff;
+  --glow: rgba(122, 162, 255, 0.15);
 }
 
 * { box-sizing: border-box; }
@@ -19,20 +20,23 @@ body {
 .app {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 32px 48px;
+  padding: 32px 36px 64px;
 }
 
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #151a23;
 }
 
 .brand {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  letter-spacing: 0.6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .nav { display: flex; gap: 12px; }
@@ -51,8 +55,8 @@ body {
   border-color: var(--accent);
 }
 
-.hero h1 { font-size: 2.2rem; margin: 0 0 8px; }
-.hero p { color: var(--muted); max-width: 720px; }
+.hero h1 { font-size: 2.6rem; margin: 0 0 10px; font-weight: 600; }
+.hero p { color: var(--muted); max-width: 760px; line-height: 1.6; }
 
 .cards {
   margin-top: 32px;
@@ -64,19 +68,20 @@ body {
 .card {
   background: var(--card);
   border: 1px solid #1b2230;
-  border-radius: 16px;
-  padding: 20px;
-  min-height: 200px;
-  transition: transform .2s ease, border-color .2s ease;
+  border-radius: 18px;
+  padding: 24px;
+  min-height: 210px;
+  box-shadow: 0 0 0 1px transparent, 0 20px 50px rgba(0,0,0,.25);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
-.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 0 0 1px var(--glow), 0 30px 70px rgba(0,0,0,.35); }
 
 .card-title { color: var(--accent-2); text-transform: uppercase; font-size: .75rem; letter-spacing: 1px; }
-.big { font-size: 2rem; margin: 10px 0; }
-.sub { color: var(--muted); }
+.big { font-size: 2.1rem; margin: 12px 0; font-weight: 500; }
+.sub { color: var(--muted); line-height: 1.5; }
 .meta { color: var(--muted); margin-top: 8px; }
-.meta.small { font-size: .8rem; }
+.meta.small { font-size: .78rem; }
 
 .section-title { font-size: 1.4rem; margin-bottom: 16px; }
 

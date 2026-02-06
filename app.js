@@ -58,17 +58,32 @@ document.getElementById('set-location').onclick = async () => {
 document.getElementById('detect-location').onclick = () => {
   if (!navigator.geolocation) return alert('Geolocation not supported');
   navigator.geolocation.getCurrentPosition(async (pos) => {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const rev = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
     settings.geo = {
       lat: pos.coords.latitude,
       lon: pos.coords.longitude,
-      tzid: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      display: 'Current location'
+      tzid: tz,
+      display: rev || 'Current location'
     };
-    settings.location = 'Current location';
+    settings.location = settings.geo.display;
     saveSettings();
     refreshData();
   }, () => alert('Unable to detect location. Try manual input.'));
 };
+
+async function reverseGeocode(lat, lon) {
+  const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=en&format=json`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.results && data.results.length) {
+      const r = data.results[0];
+      return `${r.name}, ${r.country_code}`;
+    }
+  } catch (e) {}
+  return null;
+}
 
 async function geocodeLocation(query) {
   // Use Open-Meteo geocoding (free, no key)
@@ -133,9 +148,79 @@ function findNextHoliday(items) {
   return null;
 }
 
+const PARSHA_SUMMARIES = {
+  "Bereshit": "Creation, the first humans, and the call to responsibility.",
+  "Noach": "A flood, a new covenant, and a restart for humanity.",
+  "Lech-Lecha": "Abraham’s journey begins and a people is born.",
+  "Vayera": "Hospitality, justice, and a tested faith.",
+  "Chayei Sarah": "Legacy, love, and the next generation.",
+  "Toldot": "Two brothers, two paths, one covenant.",
+  "Vayetzei": "Exile, dreams, and building a home.",
+  "Vayishlach": "Reconciliation, struggle, and identity.",
+  "Vayeshev": "Joseph’s story begins — family conflict and destiny.",
+  "Miketz": "Dreams, famine, and a turning point.",
+  "Vayigash": "Truth revealed; family reunited.",
+  "Vayechi": "Blessings, memory, and the future of a people.",
+  "Shemot": "Oppression, courage, and the call of Moses.",
+  "Va'eira": "Promises renewed; redemption begins.",
+  "Bo": "Plagues, liberation, and the first Passover.",
+  "Beshalach": "Sea, song, and the journey into freedom.",
+  "Yitro": "Revelation at Sinai; receiving the Torah.",
+  "Mishpatim": "Laws that build a just society.",
+  "Terumah": "Sanctuary, beauty, and sacred space.",
+  "Tetzaveh": "Priestly service and spiritual leadership.",
+  "Ki Tisa": "The golden calf and second chances.",
+  "Vayakhel": "Community building the Mishkan.",
+  "Pekudei": "Completion, accountability, and presence.",
+  "Vayikra": "Sacrifice, closeness, and intention.",
+  "Tzav": "Ritual, discipline, and devotion.",
+  "Shemini": "Joy and awe in sacred service.",
+  "Tazria": "Life cycles and holiness in the body.",
+  "Metzora": "Healing, reintegration, and renewal.",
+  "Achrei Mot": "Boundaries, holiness, and atonement.",
+  "Kedoshim": "Be holy; ethics that shape daily life.",
+  "Emor": "Sacred time and sacred speech.",
+  "Behar": "Shmita, freedom, and economic justice.",
+  "Bechukotai": "Covenant, consequence, and hope.",
+  "Bamidbar": "Order, journey, and belonging.",
+  "Naso": "Blessing, responsibility, and community.",
+  "Beha'alotcha": "Leadership, light, and restlessness.",
+  "Shelach": "Fear, faith, and the power of perspective.",
+  "Korach": "Authority, rebellion, and humility.",
+  "Chukat": "Paradox, loss, and perseverance.",
+  "Balak": "Unexpected blessings and moral clarity.",
+  "Pinchas": "Zeal, peace, and continuity.",
+  "Matot": "Vows, war, and moral restraint.",
+  "Masei": "Journeys, borders, and preparation.",
+  "Devarim": "Moses’ farewell and vision.",
+  "Vaetchanan": "Love, prayer, and the Shema.",
+  "Eikev": "Gratitude and trust.",
+  "Re'eh": "Choice, responsibility, and blessing.",
+  "Shoftim": "Justice, leadership, and integrity.",
+  "Ki Teitzei": "Everyday ethics and compassion.",
+  "Ki Tavo": "First fruits, gratitude, and commitment.",
+  "Nitzavim": "Standing together, choosing life.",
+  "Vayelech": "Continuity and courage.",
+  "Ha'Azinu": "A song of warning and hope.",
+  "V'Zot HaBerachah": "Blessing, completion, and renewal."
+};
+
+const HOLIDAY_SUMMARIES = {
+  "Rosh Hashana": "The Jewish New Year — reflection, renewal, and the shofar.",
+  "Yom Kippur": "Day of Atonement — fasting, repentance, and forgiveness.",
+  "Sukkot": "Festival of booths — gratitude and joy in impermanence.",
+  "Shemini Atzeret": "A quiet closing of the festival season.",
+  "Simchat Torah": "Celebration of completing and restarting the Torah.",
+  "Chanukah": "Festival of lights — resilience and dedication.",
+  "Purim": "Celebration of courage and hidden miracles.",
+  "Pesach": "Passover — liberation and the journey to freedom.",
+  "Shavuot": "Receiving the Torah — learning and revelation."
+};
+
 function describeParsha(name) {
   if (!name) return '—';
-  return 'Weekly Torah reading and themes for the upcoming Shabbat.';
+  const key = name.split(' ')[0];
+  return PARSHA_SUMMARIES[key] || 'Weekly Torah reading and themes for the upcoming Shabbat.';
 }
 
 function handleShabbat(data) {
@@ -146,9 +231,19 @@ function handleShabbat(data) {
 
   if (candle && havdalah) {
     const now = new Date();
-    const nextMoment = new Date(candle.date) > now ? candle : { ...candle, date: candle.date };
-    updateCountdown(nextMoment.date, 'Candle lighting');
-    setText('zmanim', `Candle lighting: ${new Date(candle.date).toLocaleTimeString()} • Havdalah: ${new Date(havdalah.date).toLocaleTimeString()}`);
+    const candleDate = new Date(candle.date);
+    const havdalahDate = new Date(havdalah.date);
+    if (now < candleDate) {
+      updateCountdown(candle.date, 'Candle lighting');
+      setText('next-moment', `Candle lighting • ${candleDate.toLocaleString()}`);
+    } else if (now < havdalahDate) {
+      updateCountdown(havdalah.date, 'Havdalah');
+      setText('next-moment', `Havdalah • ${havdalahDate.toLocaleString()}`);
+    } else {
+      updateCountdown(candle.date, 'Next candle lighting');
+      setText('next-moment', `Next candle lighting • ${candleDate.toLocaleString()}`);
+    }
+    setText('zmanim', `Candle lighting: ${candleDate.toLocaleTimeString()} • Havdalah: ${havdalahDate.toLocaleTimeString()}`);
   }
 
   if (parsha) {
@@ -161,8 +256,9 @@ function handleHoliday(data) {
   if (!data || !data.items) return;
   const next = findNextHoliday(data.items.filter(i => i.category === 'holiday'));
   if (!next) return;
+  const title = next.title.replace(/\s*\(.*\)/, '');
   setText('holiday', next.hebrew ? `${next.hebrew} (${next.title})` : next.title);
-  setText('holiday-desc', 'A holy day on the Jewish calendar.');
+  setText('holiday-desc', HOLIDAY_SUMMARIES[title] || 'A holy day on the Jewish calendar.');
   setText('holiday-date', `Starts: ${new Date(next.date).toLocaleDateString()}`);
   const ms = new Date(next.date) - new Date();
   setText('holiday-countdown', `Countdown: ${formatCountdown(ms)}`);
@@ -200,5 +296,14 @@ setInterval(() => {
   const cache = JSON.parse(localStorage.getItem('nefesh_cache') || 'null');
   if (!cache || !cache.shabbat) return;
   const candle = cache.shabbat.items.find(i => i.category === 'candles');
-  if (candle) updateCountdown(candle.date, 'Candle lighting');
+  const havdalah = cache.shabbat.items.find(i => i.category === 'havdalah');
+  const now = new Date();
+  if (candle && havdalah) {
+    const cd = new Date(candle.date);
+    const hd = new Date(havdalah.date);
+    if (now < cd) updateCountdown(candle.date, 'Candle lighting');
+    else if (now < hd) updateCountdown(havdalah.date, 'Havdalah');
+    else updateCountdown(candle.date, 'Next candle lighting');
+  }
+  if (cache.holiday && cache.holiday.items) handleHoliday(cache.holiday);
 }, 60000);

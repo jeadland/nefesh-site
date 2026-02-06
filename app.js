@@ -203,7 +203,7 @@ function handleShabbat(data) {
 
 function handleHoliday(data) {
   if (!data || !data.items) return;
-  const holidays = data.items.filter(i => i.category === 'holiday');
+  const holidays = data.items.filter(i => i.category === 'holiday' && !/^Shabbat/i.test(i.title));
   const next = findNextHoliday(holidays);
   if (!next) return;
   const title = next.title.replace(/\s*\(.*\)/, '');

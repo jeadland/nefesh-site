@@ -3,13 +3,121 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nefesh — Coming Soon</title>
-  <style>
-    body {font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; background:#0f1115; color:#f5f5f5;}
-    h1 {font-size:2.2rem; font-weight:600; letter-spacing:0.5px;}
-  </style>
+  <title>Nefesh — Heartbeat of Jewish Home Life</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:," />
 </head>
 <body>
-  <h1>Nefesh: Coming Soon</h1>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">Nefesh</div>
+      <nav class="nav">
+        <button class="nav-link active" data-view="home">Home</button>
+        <button class="nav-link" data-view="memories">Memories</button>
+        <button class="nav-link" data-view="settings">Settings</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="view active">
+        <div class="hero">
+          <h1>The minimalist heartbeat of Jewish home life.</h1>
+          <p>Open daily to stay oriented to Shabbat, the weekly parsha, and the Jewish calendar — plus a private, local memories hub.</p>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-title">Next Shabbat</div>
+            <div class="big" id="countdown">—</div>
+            <div class="sub" id="next-moment">—</div>
+            <div class="meta" id="zmanim">—</div>
+            <div class="meta" id="location">—</div>
+            <div class="meta small" id="updated">—</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">This Week’s Parsha</div>
+            <div class="big" id="parsha">—</div>
+            <div class="sub" id="parsha-desc">—</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Next Holiday / Holy Day</div>
+            <div class="big" id="holiday">—</div>
+            <div class="sub" id="holiday-desc">—</div>
+            <div class="meta" id="holiday-date">—</div>
+            <div class="meta" id="holiday-countdown">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="memories" class="view">
+        <div class="section-title">Memories</div>
+        <div class="memories-controls">
+          <button id="new-album">New Album</button>
+          <select id="album-select"></select>
+          <button id="add-media">Add Photos/Videos</button>
+          <button id="download-album">Download Album</button>
+        </div>
+        <div class="memories-grid" id="memories-grid"></div>
+        <div class="coming-soon">
+          <div>Holiday Photo Magic (Coming soon)</div>
+          <div>Holiday playlists (Coming soon)</div>
+        </div>
+        <div class="hint">Memories are stored locally in your browser. Nothing is uploaded.</div>
+      </section>
+
+      <section id="settings" class="view">
+        <div class="section-title">Settings</div>
+        <div class="settings-grid">
+          <div class="setting">
+            <label>Diaspora / Israel</label>
+            <div class="toggle">
+              <button id="diaspora" class="toggle-btn active">Diaspora</button>
+              <button id="israel" class="toggle-btn">Israel</button>
+            </div>
+          </div>
+
+          <div class="setting">
+            <label>Candle Lighting</label>
+            <select id="candle-setting">
+              <option value="18">18 minutes before sunset</option>
+              <option value="20">20 minutes before sunset</option>
+              <option value="30">30 minutes before sunset</option>
+              <option value="40">40 minutes before sunset</option>
+            </select>
+          </div>
+
+          <div class="setting">
+            <label>Havdalah</label>
+            <select id="havdalah-setting">
+              <option value="72">72 minutes after sunset</option>
+              <option value="50">50 minutes after sunset</option>
+              <option value="42">42 minutes after sunset</option>
+            </select>
+          </div>
+
+          <div class="setting">
+            <label>Location</label>
+            <div class="location-row">
+              <input id="location-input" placeholder="City or ZIP" />
+              <button id="set-location">Set</button>
+              <button id="detect-location">Auto-detect</button>
+            </div>
+            <div class="hint">Used for accurate candle lighting and havdalah times.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>© Nefesh</span>
+      <a href="#" id="about-link">About</a>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="app.js"></script>
+  <script src="memories.js"></script>
 </body>
 </html>
